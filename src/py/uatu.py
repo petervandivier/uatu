@@ -96,7 +96,10 @@ def format_create_index_command(idx, tbl):
     else:
         cols = idx['column_names']
     cols = ','.join(cols)
-    create_idx_text = f"CREATE INDEX {idx['name']} ON {tbl} ({cols});"
+    if_uq = ''
+    if idx['unique']:
+        if_uq = 'UNIQUE '
+    create_idx_text = f"CREATE {if_uq}INDEX {idx['name']} ON {tbl} ({cols});"
     return create_idx_text
 
 def get_create_table_command(table_name, engine):
