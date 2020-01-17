@@ -12,6 +12,7 @@ import argparse
 import json
 import os
 import pwd
+import re
 
 default_host = '127.0.0.1'
 default_user = pwd.getpwuid(os.getuid()).pw_name
@@ -112,7 +113,15 @@ def get_create_table_command(table_name, engine):
             indexes.append(create_idx_text)
     # unfound object foo returns "KeyError: 'foo'" here
     create_table_text = str(CreateTable(metadata.tables[table_name])) + ";\n"
+    create_table_text = remove_sequence(create_table_text)
     create_table_text = create_table_text + "\n".join(indexes) + "\n"
+    return create_table_text
+
+def remove_sequence(create_table_text):
+    # https://chat.stackexchange.com/transcript/message/53260939#53260939
+    p = r"((?:INTEGER|INT) DEFAULT nextval\('[^']*?'\:\:regclass\) NOT NULL)"
+    for seq in re.findall(p, create_table_text):
+        create_table_text = create_table_text.replace(seq, "SERIAL")
     return create_table_text
 
 def do_dump(args):
@@ -154,7 +163,6 @@ def do_dump(args):
 
         f.write(str(cmd_txt))
         f.close()
-
 
 if __name__ == '__main__':
     args = parser.parse_args()
