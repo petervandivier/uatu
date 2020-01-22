@@ -121,7 +121,10 @@ def get_create_table_command(table_name, engine):
     return create_table_text
 
 def remove_sequence(create_table_text):
-    # https://chat.stackexchange.com/transcript/message/53260939#53260939
+    # replace sequence construct with SERIAL or BIGSERIAL as needed
+    # sequence object not bound to table is know sqlalchemy limitation
+    # https://docs.sqlalchemy.org/en/13/core/reflection.html#limitations-of-reflection
+    # see also: https://chat.stackexchange.com/transcript/message/53260939
     p = r"((?:INTEGER|INT) DEFAULT nextval\('[^']*?'\:\:regclass\) NOT NULL)"
     for seq in re.findall(p, create_table_text):
         create_table_text = create_table_text.replace(seq, "SERIAL")

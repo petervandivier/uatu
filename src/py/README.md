@@ -2,7 +2,9 @@
 
 Snek reads postgres database table and writes to directory.
 
-## Usage
+# Usage
+
+## Reflect
 
 Assuming you've got the [sqlalchemy][2] & [attrdict][3] projects installed, you can execute...
 
@@ -17,5 +19,11 @@ In our case, the `default_project` is `uatu_demo`, which corresponds to a databa
 
 You can specify other `--projects` listed in your conf file. The database name need not be the same as the project name. 
 
+## Deploy
+
+[deploy.py](/deploy.py) additionally requires the [pandas][4] and [SQLAlchemy-Utils][5] projects
+
 [2]: https://www.sqlalchemy.org/
 [3]: https://pypi.org/project/attrdict/
+[4]: https://pypi.org/project/pandas/
+[5]: https://pypi.org/project/SQLAlchemy-Utils/
