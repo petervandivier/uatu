@@ -13,7 +13,7 @@ chmod +x uatu
 ./uatu.py 
 ```
 
-...which will read the `default_project` from [/conf/conf.json](/conf/conf.json) and write the tables in the `public` schema to the repo. 
+...which will read the `default_project` from [/conf/conf.json](../../conf/conf.example.json) and write the tables in the `public` schema to the repo. 
 
 In our case, the `default_project` is `uatu_demo`, which corresponds to a database of the same name on my localhost. 
 
