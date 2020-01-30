@@ -6,6 +6,7 @@
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.schema import CreateTable
 from sqlalchemy.engine import reflection
+from sqlalchemy.dialects import postgresql
 
 from attrdict import AttrDict
 import argparse
@@ -115,7 +116,8 @@ def get_create_table_command(table_name, engine):
             create_idx_text = format_create_index_command(idx, table_name)
             indexes.append(create_idx_text)
     # unfound object foo returns "KeyError: 'foo'" here
-    create_table_text = str(CreateTable(metadata.tables[table_name])) + ";\n"
+    tbl = metadata.tables[table_name]
+    create_table_text = str(CreateTable(tbl).compile(dialect=postgresql.dialect())) + ";\n"
     create_table_text = remove_sequence(create_table_text)
     create_table_text = create_table_text + "\n".join(indexes) + "\n"
     return create_table_text
