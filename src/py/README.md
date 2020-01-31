@@ -23,6 +23,10 @@ You can specify other `--projects` listed in your conf file. The database name n
 
 [deploy.py][6] additionally requires the [pandas][4] and [SQLAlchemy-Utils][5] projects
 
+## Limitations
+
+Currently only reflects table objects in the `public` schema. Only works on postgres.
+
 [2]: https://www.sqlalchemy.org/
 [3]: https://pypi.org/project/attrdict/
 [4]: https://pypi.org/project/pandas/
