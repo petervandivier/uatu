@@ -21,46 +21,11 @@ default_user = pwd.getpwuid(os.getuid()).pw_name
 uatu_path = os.path.dirname(os.path.realpath(__file__))
 conf = json.loads(open(f"{uatu_path}/../../conf/conf.json").read())
 
-# https://stackoverflow.com/a/20532421/4709762
-class AliasedAttrDict(AttrDict):
-    aliases = {}
-    def __getitem__(self, key):
-        if key in self.__class__.aliases:
-            return super(AliasedAttrDict, self).__getitem__(self.__class__.aliases[key])
-        return super(AliasedAttrDict, self).__getitem__(key)
-    def __getattr__(self, key):
-        if key in self.__class__.aliases:
-            return super(AliasedAttrDict, self).__getitem__(self.__class__.aliases[key])
-        return super(AliasedAttrDict, self).__getitem__(key)
-
-class ReltypeDict(AliasedAttrDict):
-    aliases = {
-        "table": "r",
-        "view": "v",
-        "materialized view": "m",
-        "index": "i",
-        "sequence": "S",
-        "special": "s",
-        "foreign table": "f",
-        "partitioned table": "p",
-        "partitioned index": "I"
-    }
-
-reltype_dict = ReltypeDict({
-    'r': {'subdir': 'tables'},
-    'v': {'subdir': 'views'},
-    'm': {'subdir': 'views'},
-    'i': {'subdir': 'special'},
-    'S': {'subdir': 'special'},
-    's': {'subdir': 'special'},
-    'f': {'subdir': 'tables'},
-    'p': {'subdir': 'tables'},
-    'I': {'subdir': 'tables'}
-})
-
 parser = argparse.ArgumentParser()
-parser.add_argument('--host',     default=default_host, help='IP address or DNS name of postgres server. Default localhost')
+parser.add_argument('--host',     default=default_host, help='IP address or DNS name of the postgres instance. Default localhost')
+parser.add_argument('--port',     default=5432,         help='Port of the postgres instance. Default 5432')
 parser.add_argument('--user',     default=default_user, help='UserName to connect to the database')
+parser.add_argument('--password', default='')
 parser.add_argument('--project',  default=conf['default_project'])
 
 def get_uatu_path(project, obj_type, schema, relname):
@@ -73,7 +38,7 @@ def get_uatu_path(project, obj_type, schema, relname):
     # most everything is in "public" atm
     if schema_dir == 'public':
         schema_dir = ''
-    subdir = reltype_dict[obj_type]['subdir']
+    subdir = "tables"
     return_val = {
         'dir_full_path': os.path.join(project_path, schema_dir, subdir),
         'file_full_path': os.path.join(project_path, schema_dir, subdir, relname + ".sql")
@@ -135,7 +100,7 @@ def remove_sequence(create_table_text):
 def do_dump(args):
     db_name = conf['projects'][args.project]['db_name']
 
-    db_uri = f"postgres://{args.user}@{args.host}:5432/{db_name}"
+    db_uri = f"postgres://{args.user}:{args.password}@{args.host}:{args.port}/{db_name}"
     # TODO: errorcheck connection
     engine = create_engine(db_uri)
 
