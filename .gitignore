@@ -2,4 +2,5 @@
 .vscode
 __pycache__
 
-conf/conf.json
+conf/*
+!conf/example.conf.json

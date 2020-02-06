@@ -27,6 +27,8 @@ parser.add_argument('--port',     default=5432,         help='Port of the postgr
 parser.add_argument('--user',     default=default_user, help='UserName to connect to the database')
 parser.add_argument('--password', default='')
 parser.add_argument('--project',  default=conf['default_project'])
+# TODO: one-off manual config support
+# parser.add_argument('--config')
 
 def get_uatu_path(project, obj_type, schema, relname):
     if project is None: 
@@ -139,6 +141,8 @@ def do_dump(args):
 
 if __name__ == '__main__':
     args = parser.parse_args()
+
+    # TODO: if args.config is not None and args.project is not conf['default_project']: sys.exit ("you may only specify one of ...")
 
     do_dump(args)
 
