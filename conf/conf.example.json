@@ -1,5 +1,4 @@
 {
-    "default_project":"uatu_demo",
     "projects":{
         "uatu_demo":{
             "path":"~/repos/git/db-code/uatu_demo",

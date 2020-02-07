@@ -26,7 +26,7 @@ parser.add_argument('--host',     default=default_host, help='IP address or DNS 
 parser.add_argument('--port',     default=5432,         help='Port of the postgres instance. Default 5432')
 parser.add_argument('--user',     default=default_user, help='UserName to connect to the database')
 parser.add_argument('--password', default='')
-parser.add_argument('--project',  default=conf['default_project'])
+parser.add_argument('--project')
 # TODO: one-off manual config support
 # parser.add_argument('--config')
 
