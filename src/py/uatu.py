@@ -26,7 +26,9 @@ parser.add_argument('--host',     default=default_host, help='IP address or DNS 
 parser.add_argument('--port',     default=5432,         help='Port of the postgres instance. Default 5432')
 parser.add_argument('--user',     default=default_user, help='UserName to connect to the database')
 parser.add_argument('--password', default='')
-parser.add_argument('--project')
+# TODO: default='foo' needed here for error-free entry into interactive session
+#   how to make that not suck? 🤔
+parser.add_argument('--project',  default='foo')
 # TODO: one-off manual config support
 # parser.add_argument('--config')
 
@@ -99,10 +101,16 @@ def remove_sequence(create_table_text):
         create_table_text = create_table_text.replace(seq, "SERIAL")
     return create_table_text
 
-def do_dump(args):
-    db_name = conf['projects'][args.project]['db_name']
+def do_dump(
+    project,
+    user,
+    password,
+    host,
+    port
+):
+    db_name = conf['projects'][project]['db_name']
 
-    db_uri = f"postgres://{args.user}:{args.password}@{args.host}:{args.port}/{db_name}"
+    db_uri = f"postgres://{user}:{password}@{host}:{port}/{db_name}"
     # TODO: errorcheck connection
     engine = create_engine(db_uri)
 
@@ -113,7 +121,7 @@ def do_dump(args):
     bind_schema = None
 
     metadata.reflect(bind=engine,schema=bind_schema)
-    # key_name = f"{args.schema}.{args.object}"
+    # key_name = f"{schema}.{object}"
 
     ddl = metadata.tables
 
@@ -144,5 +152,11 @@ if __name__ == '__main__':
 
     # TODO: if args.config is not None and args.project is not conf['default_project']: sys.exit ("you may only specify one of ...")
 
-    do_dump(args)
+    do_dump(
+        args.project,
+        args.user,
+        args.password,
+        args.host,
+        args.port
+    )
 
