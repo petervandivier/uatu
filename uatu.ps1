@@ -24,6 +24,9 @@ $projects = @{
 New-Variable @projects
 
 $pySymLink = (New-Item -ItemType SymbolicLink -Path "$cacheDir/uatu.py" -Value "$PSScriptRoot/src/py/uatu.py" -Force).FullName
-# if($os -ne 'Windows'){} for below... not sure how to do atm
+# https://devblogs.microsoft.com/scripting/powertip-identify-which-platform-powershell-is-running-on/
+# see also, $isWindows, $isMacOS, $isLinux
+if('Unix' -eq $psVersionTable.Platform){
+    Invoke-Command {chmod 0744 $pySymLink}
+} 
 # ¿TODO?: export symlink to $PATH 🤔
-Invoke-Command {chmod 0744 $pySymLink}
