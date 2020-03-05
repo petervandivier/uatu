@@ -8,7 +8,6 @@ from sqlalchemy.schema import CreateTable
 from sqlalchemy.engine import reflection
 from sqlalchemy.dialects import postgresql
 
-from attrdict import AttrDict
 import argparse
 import json
 import os
@@ -19,7 +18,8 @@ default_host = '127.0.0.1'
 default_user = pwd.getpwuid(os.getuid()).pw_name
 
 uatu_path = os.path.dirname(os.path.realpath(__file__))
-conf = json.loads(open(f"{uatu_path}/../../conf/conf.json").read())
+conf_path = os.path.expanduser("~/.uatu")
+conf = json.loads(open(f"{conf_path}/conf.json").read())
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--host',     default=default_host, help='IP address or DNS name of the postgres instance. Default localhost')
