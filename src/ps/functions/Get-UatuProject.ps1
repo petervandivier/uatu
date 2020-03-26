@@ -14,15 +14,19 @@ function Get-UatuProject {
         if(-not $uatu_Projects){
             $uatu_Projects = (Get-Content "$env:HOME/.uatu/conf.json" | ConvertFrom-Json).Projects
         }
+
+        if(-not $Project){
+            $Project = $uatu_Projects.PSObject.Properties.Name
+        }
     }
 
     process{
-        if($Project){
-            foreach($p in $Project){
-                $uatu_Projects.$p
+        foreach($p in $Project){
+            [PSCustomObject]@{
+                ProjectName  = $p
+                DatabaseName = $uatu_Projects.$p.db_name
+                ProjectPath  = $uatu_Projects.$p.path
             }
-        }else {
-            $uatu_Projects
         }
     }
 }
