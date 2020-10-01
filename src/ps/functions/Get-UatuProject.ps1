@@ -2,6 +2,12 @@ function Get-UatuProject {
 <#
 .DESCRIPTION
     List currently available Uatu projects in memory
+
+.BUG
+    Non-existent project identifiers should return empty set rather than project with null attributes
+
+.TODO
+    Handle for fuzzy search
 #>
     [CmdletBinding()]
     param (
@@ -12,7 +18,7 @@ function Get-UatuProject {
 
     begin{
         if(-not $uatu_Projects){
-            $uatu_Projects = (Get-Content "$env:HOME/.uatu/conf.json" | ConvertFrom-Json).Projects
+            $uatu_Projects = (Get-UatuConfiguration).Projects
         }
 
         if(-not $Project){
