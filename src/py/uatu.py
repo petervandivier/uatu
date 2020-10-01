@@ -93,9 +93,9 @@ def get_create_table_command(table_name, engine):
 
 def remove_sequence(create_table_text):
     # replace sequence construct with SERIAL or BIGSERIAL as needed
-    # sequence object not bound to table is know sqlalchemy limitation
-    # https://docs.sqlalchemy.org/en/13/core/reflection.html#limitations-of-reflection
-    # see also: https://chat.stackexchange.com/transcript/message/53260939
+    # sequence object not being bound to a table is a known property of sqlalchemy
+    #   https://docs.sqlalchemy.org/en/13/core/reflection.html#limitations-of-reflection
+    #   see also: https://chat.stackexchange.com/transcript/message/53260939
     p = r"((?:INTEGER|INT) DEFAULT nextval\('[^']*?'\:\:regclass\) NOT NULL)"
     for seq in re.findall(p, create_table_text):
         create_table_text = create_table_text.replace(seq, "SERIAL")
@@ -109,22 +109,16 @@ def do_dump(
     port
 ):
     db_name = conf['projects'][project]['db_name']
-
     db_uri = f"postgres://{user}:{password}@{host}:{port}/{db_name}"
     # TODO: errorcheck connection
     engine = create_engine(db_uri)
-
     metadata = MetaData()
-
     # TODO: handle for non-"public" schema
     # enumerate schemas with inspector - see: https://stackoverflow.com/a/22690122/4709762
     bind_schema = None
-
     metadata.reflect(bind=engine,schema=bind_schema)
     # key_name = f"{schema}.{object}"
-
     ddl = metadata.tables
-
     for obj in ddl:
         # TODO: handle for dots in object identifiers
         # key name does not contain schema for objects in public schema
@@ -136,14 +130,10 @@ def do_dump(
             schema = ''
             name = obj
             key_name = obj
-
         cmd_txt = get_create_table_command(key_name, engine)
-
         repo = get_uatu_path(args.project, 'table', schema, name)
-
         os.makedirs(repo['dir_full_path'],exist_ok=True)
         f = open(repo['file_full_path'],'w+')
-
         f.write(str(cmd_txt))
         f.close()
 
