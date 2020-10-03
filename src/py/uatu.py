@@ -24,7 +24,7 @@ conf = json.loads(open(f"{conf_path}/conf.json").read())
 parser = argparse.ArgumentParser()
 parser.add_argument('--host',     default=default_host, help='IP address or DNS name of the postgres instance. Default localhost')
 parser.add_argument('--port',     default=5432,         help='Port of the postgres instance. Default 5432')
-parser.add_argument('--user',     default=default_user, help='UserName to connect to the database')
+parser.add_argument('--user',     default='postgres',   help='UserName to connect to the database. Default postgres')
 parser.add_argument('--password', default='')
 # TODO: default='foo' needed here for error-free entry into interactive session
 #   how to make that not suck? 🤔
